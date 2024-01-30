@@ -1,4 +1,3 @@
-// src/utils/bcryptUtils.js
 const bcrypt = require('bcryptjs');
 
 const saltRounds = 10;

@@ -1,4 +1,3 @@
-// src/controllers/userController.js
 const User = require('../models/user');
 const Restaurant = require('../models/restaurant');
 const { hashPassword, comparePasswords } = require('../utils/bcryptUtils');
@@ -8,7 +7,6 @@ const signup = async (req, res) => {
   const { username, password, email, address, location } = req.body;
 
   try {
-    // Hash the password before saving to the database
     const hashedPassword = await hashPassword(password);
 
       const newUser = new User({
@@ -21,7 +19,6 @@ const signup = async (req, res) => {
 
       const savedUser = await newUser.save();
 
-      // Generate a token for the new user
       const token = generateToken({ userId: savedUser._id, role: savedUser.role });
 
       res.json({ token });
@@ -45,14 +42,12 @@ const login = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Compare the provided password with the stored hashed password
     const passwordMatch = await comparePasswords(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    // Generate a token for the logged-in user
     const token = generateToken({ userId: user._id, role: user.role });
 
     res.json({ token });
@@ -63,18 +58,18 @@ const login = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-  // Implement logic to fetch user/restaurant details using req.user
-  res.json({ user: req.user });
+  const userId = req.user.userId;
+  const user = await User.findById(userId);
+  res.json({ user });
 };
 
 const getNearestRestaurant = async (req, res) => {
-  const userId = req.user.userId; // Assuming the user ID is provided in the URL parameter
-  const range = parseFloat(req.query.range) || 5; // Default range is 5 kilometers
-  const page = parseInt(req.query.page) || 1; // Default page is 1
-  const pageSize = parseInt(req.query.pageSize) || 10; // Default page size is 10
+  const userId = req.user.userId; 
+  const range = parseFloat(req.query.range) || 5; 
+  const page = parseInt(req.query.page) || 1; 
+  const pageSize = parseInt(req.query.pageSize) || 10; 
 
   try {
-    // Retrieve the user's location
     const user = await User.findById(userId);
     const userLocation = user.location.coordinates;
     const skip = (page - 1) * pageSize;
@@ -87,7 +82,7 @@ const getNearestRestaurant = async (req, res) => {
             coordinates: userLocation,
           },
           distanceField: 'distance',
-          maxDistance: range * 1000, // Convert range to meters
+          maxDistance: range * 1000, 
           spherical: true,
         },
       },

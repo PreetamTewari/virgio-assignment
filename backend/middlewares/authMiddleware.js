@@ -1,4 +1,3 @@
-// src/middlewares/authMiddleware.js
 const { verifyToken } = require('../utils/jwtUtils');
 
 const authMiddleware = (req, res, next) => {
@@ -11,7 +10,7 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = verifyToken(token);
-    console.log(decoded);
+    // console.log(decoded);
     req.user = decoded;
     next();
   } catch (error) {

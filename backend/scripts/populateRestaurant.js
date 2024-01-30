@@ -1,10 +1,9 @@
 // createRestaurantsScript.js
 const mongoose = require('mongoose');
 const { faker } = require('@faker-js/faker');
-const Restaurant = require('../models/restaurant'); // Adjust the path based on your project structure
+const Restaurant = require('../models/restaurant'); 
 const { hashPassword } = require('../utils/bcryptUtils');
 
-// Dharwad district's coordinates (central point)
 const dharwadLatitude = 15.4589;
 const dharwadLongitude = 75.0078;
 
@@ -19,13 +18,11 @@ db.on('error', (err) => {
 db.once('open', async () => {
   console.log('Connected to MongoDB');
 
-  // Create and save 1000 restaurant records within a 25 km radius from Dharwad district
   const restaurants = [];
   for (let i = 0; i < 10000; i++) {
-    const randomDistance = Math.random() * 25; // Random distance within 25 km radius
-    const randomAngle = Math.random() * 2 * Math.PI; // Random angle
+    const randomDistance = Math.random() * 25; 
+    const randomAngle = Math.random() * 2 * Math.PI; 
 
-    // Calculate new latitude and longitude
     const newLatitude = dharwadLatitude + (randomDistance / 111.32) * Math.cos(randomAngle);
     const newLongitude = dharwadLongitude + (randomDistance / (111.32 * Math.cos(dharwadLatitude))) * Math.sin(randomAngle);
 
@@ -47,13 +44,11 @@ db.once('open', async () => {
   }
 
   try {
-    // Save all restaurants to the database
     const savedRestaurants = await Restaurant.insertMany(restaurants);
     console.log('Successfully created and saved 1000 restaurants:', savedRestaurants);
   } catch (error) {
     console.error('Error creating and saving restaurants:', error);
   } finally {
-    // Close the database connection
     mongoose.connection.close();
   }
 });

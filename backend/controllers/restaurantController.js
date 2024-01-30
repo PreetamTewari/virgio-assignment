@@ -8,7 +8,6 @@ const signup = async (req, res) => {
     const { username, password, address, location, name, is_open, opening_hours, closing_hours } = req.body;
   
     try {
-      // Hash the password before saving to the database
       const hashedPassword = await hashPassword(password);
 
         const newRestaurant = new Restaurant({
@@ -24,7 +23,6 @@ const signup = async (req, res) => {
 
         const savedRestaurant = await newRestaurant.save();
 
-        // Generate a token for the new restaurant user
         const token = generateToken({ userId: savedRestaurant._id, role: savedRestaurant.role });
 
         res.json({ token });
@@ -47,14 +45,12 @@ const signup = async (req, res) => {
         return res.status(404).json({ message: 'User not found' });
       }
   
-      // Compare the provided password with the stored hashed password
       const passwordMatch = await comparePasswords(password, user.password);
   
       if (!passwordMatch) {
         return res.status(401).json({ message: 'Incorrect password' });
       }
   
-      // Generate a token for the logged-in user
       const token = generateToken({ userId: user._id, role: user.role });
   
       res.json({ token });
@@ -73,11 +69,17 @@ const signup = async (req, res) => {
     }
  };
 
+ const getRestaurantProfile = async (req, res) => {
+  const restaurantId = req.user.userId;
+  const restaurant = await Restaurant.findById(restaurantId);
+  res.json({ restaurant });
+};
+
  const addMenuItem = async (req, res) => {
     // console.log(req)
     // return
     const { name, description, pricePerUnit, is_available } = req.body;
-    const restaurantId = req.user.userId; // Assuming you get the restaurantId from the route parameter
+    const restaurantId = req.user.userId; 
   
     try {
       const restaurant = await Restaurant.findById(restaurantId);
@@ -104,7 +106,7 @@ const signup = async (req, res) => {
   };
 
   const getMenuItems = async (req, res) => {
-    const restaurantId = req.user.userId; // Assuming you get the restaurantId from the route parameter
+    const restaurantId = req.params.id; 
   
     try {
       const menuItems = await Menu.find({ restaurant: restaurantId });
@@ -118,7 +120,7 @@ const signup = async (req, res) => {
   
   const updateMenuItem = async (req, res) => {
     const { name, description, pricePerUnit, is_available } = req.body;
-    const menuItemId = req.params.menuItemId;
+    const menuItemId = req.params.id;
   
     try {
       const updatedMenuItem = await Menu.findByIdAndUpdate(
@@ -135,7 +137,7 @@ const signup = async (req, res) => {
   };
   
   const deleteMenuItem = async (req, res) => {
-    const menuItemId = req.params.menuItemId;
+    const menuItemId = req.params.id;
   
     try {
       await Menu.findByIdAndDelete(menuItemId);
@@ -148,4 +150,4 @@ const signup = async (req, res) => {
   };
 
   
-  module.exports = { signup, login, getRestaurant, addMenuItem, getMenuItems, updateMenuItem, deleteMenuItem };
+  module.exports = { signup, login, getRestaurant, addMenuItem, getMenuItems, updateMenuItem, deleteMenuItem, getRestaurantProfile };

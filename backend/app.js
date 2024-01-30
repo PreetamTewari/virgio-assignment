@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
+app.options('*', cors());
 app.use('/api/user', userRoutes);
 app.use('/api/restaurant', restaurantRoutes);
 mongoose.connect(process.env.MONGO_DB_URI);

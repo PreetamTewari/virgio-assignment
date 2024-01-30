@@ -16,10 +16,8 @@ db.once('open', async () => {
   console.log('Connected to MongoDB');
 
   try {
-    // Retrieve all restaurant IDs
     const restaurantIds = await Restaurant.find().distinct('_id');
 
-    // Create and save 3 menu items for each restaurant
     const menuItems = [];
     for (const restaurantId of restaurantIds) {
       for (let i = 0; i < 5; i++) {
@@ -35,13 +33,11 @@ db.once('open', async () => {
       }
     }
 
-    // Save all menu items to the database
     const savedMenuItems = await Menu.insertMany(menuItems);
     console.log('Successfully created and saved menu items:', savedMenuItems);
   } catch (error) {
     console.error('Error creating and saving menu items:', error);
   } finally {
-    // Close the database connection
     mongoose.connection.close();
   }
 });

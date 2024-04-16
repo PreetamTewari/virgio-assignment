@@ -4,7 +4,7 @@ const { faker } = require('@faker-js/faker');
 const Restaurant = require('../models/restaurant');
 const Menu = require('../models/menu');
 
-mongoose.connect('mongodb://localhost:27017/test');
+mongoose.connect('mongodb://localhost:27017/bangalore');
 
 const db = mongoose.connection;
 

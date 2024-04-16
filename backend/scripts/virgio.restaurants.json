@@ -1,0 +1,70 @@
+[{
+  "name": "mtr",
+  "username": "mtr",
+  "password": "password",
+  "address": "hsr",
+  "location": [12.916756290363404,77.6446253377721],
+  "is_open": true,
+  "opening_hours": "10:00 AM",
+  "closing_hours": "10:00 PM"
+},
+{
+  "name": "cevi",
+  "username": "cevi",
+  "password": "password",
+  "address": "hsr",
+  "location": [12.916986351999558,77.64506522004183],
+  "is_open": true,
+  "opening_hours": "10:00 AM",
+  "closing_hours": "10:00 PM"
+},
+{
+  "name": "silbatti",
+  "username": "sil",
+  "password": "password",
+  "address": "hsr",
+  "location": [12.916337995936711,77.64464679544379],
+  "is_open": true,
+  "opening_hours": "10:00 AM",
+ "closing_hours": "10:00 PM"
+},
+{
+  "name": "rashtrakutas",
+  "username": "rash",
+  "password": "password",
+  "address": "hsr",
+  "location": [12.91384912961833,77.64483991448904],
+  "is_open": true,
+  "opening_hours": "10:00 AM",
+  "closing_hours": "10:00 PM"
+},
+{
+  "name": "boba bhai",
+  "username": "boba",
+  "password": "password",
+  "address": "hsr",
+  "location": [12.917707907575046,77.64916363533554],
+  "is_open": true,
+  "opening_hours": "10:00 AM",
+  "closing_hours": "10:00 PM"
+},
+{
+  "name": "ctr",
+  "username": "ctr",
+  "password": "password",
+  "address": "malleshwaram",
+  "location": [12.998269034504087,77.56962186846035],
+  "is_open": true,
+  "opening_hours": "10:00 AM",
+  "closing_hours": "10:00 PM"
+},
+{
+  "name": "purple",
+  "username": "purple",
+  "password": "password",
+  "address": "goa",
+  "location": [15.583208212174787,73.73756972248174],
+  "is_open": true,
+  "opening_hours": "10:00 AM",
+  "closing_hours": "10:00 PM"
+}]

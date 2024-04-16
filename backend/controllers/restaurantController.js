@@ -2,6 +2,7 @@ const Restaurant = require('../models/restaurant');
 const Menu = require('../models/menu');
 const { hashPassword, comparePasswords } = require('../utils/bcryptUtils');
 const { generateToken } = require('../utils/jwtUtils');
+const geohash = require('ngeohash');
 
 
 const signup = async (req, res) => {
@@ -9,16 +10,18 @@ const signup = async (req, res) => {
   
     try {
       const hashedPassword = await hashPassword(password);
+      const geohashValue = geohash.encode(location.latitude, location.longitude, 7);
 
         const newRestaurant = new Restaurant({
             name,
             username,
             password: hashedPassword,
             address,
-            location: {type: "Point", coordinates: [location.latitude, location.longitude]},
+            location: {type: "Point", coordinates: [location.longitude, location.latitude]},
             is_open,
             opening_hours,
             closing_hours,
+            geohash: geohashValue
         });
 
         const savedRestaurant = await newRestaurant.save();

@@ -19,12 +19,14 @@
         <div>
             <h3 class="text-center mt-5">Nearest Restaurants</h3>
             <div style="width: 100%;">
-                <v-text-field v-model="range" label="Range in Kms"  hide-details style="width: 40%;"></v-text-field>
+                <v-text-field v-model="range" label="Range in Kms" class="input-range"  hide-details style="width: 40%;"></v-text-field>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <v-list lines="one">
                     <v-list-item v-for="restaurant in restaurants" :key="restaurant.id">
-                        <v-list-item-title>{{restaurant.name}}</v-list-item-title>
-                        <v-list-item-subtitle>{{parseInt(restaurant.distance)}} m</v-list-item-subtitle>
+                        <v-list-item-title class="text-h6">
+                            <a :href="'/menu/'+restaurant._id">{{restaurant.name}}</a>
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="font-weight-bold">{{metersToKilometers(restaurant.distance)}} km</v-list-item-subtitle>
                     </v-list-item>
                 </v-list>
                 </div>
@@ -49,7 +51,7 @@ export default {
             user: {},
             restaurants: [],
             currentPage: 1,
-            range: 10
+            range: 5
         };
     },
     created() {
@@ -63,6 +65,10 @@ export default {
 
     },
     methods: {
+        metersToKilometers(meters){
+            meters = parseInt(meters);
+            return (meters/1000).toFixed(2);
+        },
         getUser() {
             axios.get('/user/profile', {
                     headers: {
@@ -92,11 +98,13 @@ export default {
                     }
                 })
                 .then((r) => {
+                    // this.restaurants = r.data.nearestRestaurants;
                     if (this.restaurants.length == 0) {
                         this.restaurants = r.data.nearestRestaurants;
                     } else {
                         this.restaurants = this.restaurants.concat(r.data.nearestRestaurants);
                     }
+                    console.log(this.restaurants.length)
 
                     return r
                 })
@@ -122,6 +130,13 @@ export default {
     beforeUnmount() {
         window.removeEventListener('scroll', this.handleScroll);
     },
+    watch:{
+        range(){
+            this.restaurants = [];
+            this.currentPage = 1;
+            this.getRestaurants();
+        }
+    }
 };
 </script>
 

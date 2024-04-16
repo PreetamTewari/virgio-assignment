@@ -2,6 +2,9 @@ const User = require('../models/user');
 const Restaurant = require('../models/restaurant');
 const { hashPassword, comparePasswords } = require('../utils/bcryptUtils');
 const { generateToken } = require('../utils/jwtUtils');
+const { haversineDistance } = require('../utils/distanceUtils');
+const { calculateGeohashPrecision } = require('../utils/geoUtils');
+const geohash = require('ngeohash');
 
 const signup = async (req, res) => {
   const { username, password, email, address, location } = req.body;
@@ -14,7 +17,7 @@ const signup = async (req, res) => {
         password: hashedPassword,
         email,
         address,
-        location: {type: "Point", coordinates: [location.latitude, location.longitude]}
+        location: {type: "Point", coordinates: [location.longitude, location.latitude]}
       });
 
       const savedUser = await newUser.save();
@@ -73,23 +76,64 @@ const getNearestRestaurant = async (req, res) => {
     const user = await User.findById(userId);
     const userLocation = user.location.coordinates;
     const skip = (page - 1) * pageSize;
+    console.log(userLocation);
+
+    const userGeohash = geohash.encode(userLocation[0], userLocation[1], 7);
+    console.log(userGeohash);
+    const maxDistance = range * 1000;
+
+    // var nearestRestaurants = await Restaurant.find(
+    // {
+    //   geohash: {
+    //     $regex: `^${userGeohash.substring(0,5)}`,
+    //   }
+    // },
+    // )
+
+    var query = {
+      geohash: {
+        $regex: `^${userGeohash.substring(0,5)}`,
+      },
+    }
 
     const nearestRestaurants = await Restaurant.aggregate([
       {
         $geoNear: {
-          near: {
-            type: 'Point',
-            coordinates: userLocation,
-          },
+          near: { type: 'Point', coordinates: [userLocation[0], userLocation[1]] },
           distanceField: 'distance',
-          maxDistance: range * 1000, 
           spherical: true,
+          maxDistance: maxDistance, 
+        },
+      },
+      {
+        $match: {
+          geohash: {
+            $regex: `^${userGeohash.substring(0, 3)}`,
+          },
         },
       },
       { $skip: skip },
       { $limit: pageSize },
     ]);
 
+    // nearestRestaurants = nearestRestaurants.map(restaurant => {
+    //   const restaurantLocation = restaurant.location.coordinates;
+    //   const coord1 = {
+    //     latitude: restaurantLocation[1],
+    //     longitude: restaurantLocation[0]
+    //   };
+    //   const coord2 = {
+    //     latitude: userLocation[1],
+    //     longitude: userLocation[0]
+    //   };
+    //   const distance = haversineDistance(coord1, coord2);
+
+    //   return {
+    //     ...restaurant.toObject(), 
+    //     distance: distance
+    //   };
+    // });
+    // nearestRestaurants.sort((a, b) => a.distance - b.distance);
     res.json({ nearestRestaurants });
   } catch (error) {
     console.error(error);

@@ -20,6 +20,7 @@ const restaurantSchema = new mongoose.Schema({
   is_open: { type: Boolean, default: false },
   opening_hours: { type: String },
   closing_hours: { type: String },
+  geohash: { type: String}
 });
 
 restaurantSchema.index({ location: '2dsphere' });
